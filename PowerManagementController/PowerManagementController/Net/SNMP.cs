@@ -39,9 +39,9 @@ namespace PowerManagementController.Net
         private ISnmpMessage DoQuery(string OID)
         {
             Discovery discovery = Messenger.GetNextDiscovery(SnmpType.GetRequestPdu);
-            ReportMessage report = discovery.GetResponse(60000, new IPEndPoint(IPAddress.Parse(ConnectionOptions.SNMPHost), 161));
+            ReportMessage report = discovery.GetResponse(5000, new IPEndPoint(IPAddress.Parse(ConnectionOptions.SNMPHost), 161));
             GetRequestMessage request = new GetRequestMessage(VersionCode.V3, Messenger.NextMessageId, Messenger.NextRequestId, new OctetString(ConnectionOptions.SNMPUser), new List<Variable> { new Variable(new ObjectIdentifier(OID)) }, ConnectionOptions.PrivacyProvider, Messenger.MaxMessageSize, report);
-            ISnmpMessage reply = request.GetResponse(6000, new IPEndPoint(IPAddress.Parse(ConnectionOptions.SNMPHost), Convert.ToInt32(ConnectionOptions.SNMPPort)));
+            ISnmpMessage reply = request.GetResponse(5000, new IPEndPoint(IPAddress.Parse(ConnectionOptions.SNMPHost), Convert.ToInt32(ConnectionOptions.SNMPPort)));
             if (reply.Pdu().ErrorStatus.ToInt32() != 0) // != ErrorCode.NoError
             {
                 throw ErrorException.Create(
