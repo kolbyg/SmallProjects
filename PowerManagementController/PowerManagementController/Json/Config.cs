@@ -25,20 +25,24 @@ namespace PowerManagementController.Json
     }
     class ConfigFile
     {
-        [JsonProperty] public List<string> IPsToPing { get; set; }
         [JsonProperty] public string Identifier { get; set; }
         [JsonProperty] public string Location { get; set; }
         [JsonProperty] public string NodeKey { get; set; }
         [JsonProperty] public bool IsOrphaned { get; set; }
+        [JsonProperty] public string ipmiutilPath { get; set; }
         [JsonProperty] public List<Hypervisor> LocalHypervisors { get; set; }
         [JsonProperty] public List<PowerDevice> LocalPowerDevices { get; set; }
-        [JsonProperty] public List<SNMPDevice> SNMPDevices { get; set; }
+        [JsonProperty] public List<PingDevice> LocalPingDevices { get; set; }
         [JsonProperty] public List<string> Nodes { get; set; }
+    }
+    class PingDevice
+    {
+        [JsonProperty] public string Identifier { get; set; }
+        [JsonProperty] public string Hostname { get; set; }
     }
     class SNMPDevice
     {
         [JsonProperty] public List<SNMPOID> SNMPOIDs { get; set; }
-
         [JsonProperty] public string SNMPUsername { get; set; }
         [JsonProperty] public string SNMPPassword { get; set; }
         [JsonProperty] public string SNMPEncryptionKey { get; set; }
@@ -65,6 +69,7 @@ namespace PowerManagementController.Json
     {
         [JsonProperty] public string Identifier { get; set; }
         [JsonProperty] public string Hostname { get; set; }
+        [JsonProperty] public SNMPDevice SNMPDevice { get; set; }
     }
     class Hypervisor
     {
@@ -74,6 +79,7 @@ namespace PowerManagementController.Json
         [JsonProperty] public string IPMIUsername { get; set; }
         [JsonProperty] public string IPMIPassword { get; set; }
         [JsonProperty] public IPMI.IPMIType IPMIType { get; set; }
+        [JsonProperty] public IPMI.PowerStatus PowerStatus { get; set; }
     }
 
 }

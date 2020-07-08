@@ -6,7 +6,12 @@ namespace PowerManagementController
 {
     class Program
     {
-        public static Config config;
+        public static Config Config;
+        public static Net.NodeServer NodeServer;
+        static void StartNodeServer()
+        {
+            NodeServer = new Net.NodeServer(1111);//todo config port
+        }
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -20,21 +25,25 @@ namespace PowerManagementController
                 default:
                     break;
             }
+
         }
         static void DoCycle()
         {
             Console.WriteLine("Power Management Controller Starting Up");
-            config = new Config();
-            Console.WriteLine("Communicating with other nodes");
+            Config = new Config();
+            Console.WriteLine("Communicating with other nodes...");
             Logic.DoNodeSync();
-            if (config.LocalConfig.IsOrphaned)
+            if (Config.LocalConfig.IsOrphaned)
             {
                 Console.WriteLine("Node flagged as orphaned, shutting down.");
                 Environment.Exit(0);
             }    
-            Console.WriteLine("Begining Checks");
+            Console.WriteLine("Begining Checks...");
             Logic.PingTests();
             Logic.SNMPChecks();
+            Logic.IPMIChecks();
+            Console.WriteLine("Checks complete, evaluating data...");
+            Logic.EvaluatePowerData();
             //Ping test all listed ips
             //check snmp for ups battery level, load, etc
             //check ilo/ipmi for server power status
@@ -77,6 +86,7 @@ namespace PowerManagementController
                        Console.WriteLine($"{result.ID}: {result.Data}");
                    }
                }*/
+            StartNodeServer();
             DoCycle();
             Console.ReadLine();
 

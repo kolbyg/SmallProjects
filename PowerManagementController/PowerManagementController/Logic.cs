@@ -12,9 +12,17 @@ namespace PowerManagementController
         {
             //todo
         }
+        public static void IPMIChecks()
+        { //todo, change this to collect data from ALL hypervisors
+            foreach(Hypervisor hypervisor in Config.LocalConfig.LocalHypervisors)
+            {
+                IPMI.IPMIDevice device = new IPMI.IPMIDevice(hypervisor.IPMIHostname, hypervisor.IPMIPassword, hypervisor.IPMIUsername,Config.LocalConfig.ipmiutilPath);
+                hypervisor.PowerStatus = device.QueryPowerStatus();
+            }
+        }
         public static void PingTests()
         {
-            foreach (string host in config.LocalConfig.IPsToPing)
+            foreach (string host in Config.LocalConfig.LocalPingDevices.Select(x=> x.Hostname))
             {
                 Net.PingResult result = Net.Ping.PingHost(host, 5);
                 if (result.NumDropped != 0)
@@ -24,7 +32,7 @@ namespace PowerManagementController
         }
         public static void SNMPChecks()
         {
-            foreach (SNMPDevice device in config.LocalConfig.SNMPDevices)
+            foreach (SNMPDevice device in Config.LocalConfig.LocalPowerDevices.Select(x => x.SNMPDevice))
             {
                 Console.WriteLine($"Connecting to SNMP device: {device.SNMPIdentifier} - {device.SNMPUsername}@{device.SNMPHost}");
                 Net.SNMPConnectionOptions sNMPConnectionOptions = new Net.SNMPConnectionOptions
@@ -52,6 +60,10 @@ namespace PowerManagementController
                 }
                 Console.WriteLine($"Done processing SNMP Device: {device.SNMPIdentifier}");
             }
+        }
+        public static void EvaluatePowerData()
+        {
+
         }
     }
 }
