@@ -70,6 +70,10 @@ namespace PowerManagementController.Json
     {
         [JsonProperty] public string Identifier { get; set; }
         [JsonProperty] public string Hostname { get; set; }
+        [JsonProperty] public string IPMIHostname { get; set; }
+        [JsonProperty] public string IPMIUsername { get; set; }
+        [JsonProperty] public string IPMIPassword { get; set; }
+        [JsonProperty] public IPMI.IPMIType IPMIType { get; set; }
     }
 
 }
